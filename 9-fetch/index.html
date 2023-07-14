@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <style>
+        .tarjeta{
+            border-radius: 25px;
+            border:1px solid #ccc;
+        }
+        #ImagenPersonaje{
+            width: 100%;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row pt-5">
+            <div class="col-md-8">
+
+            </div>
+
+            <div class="col-md-4">
+                <select class="form-control" id="SelectPersonaje" onchange="GetCharacter(this.value)">                   
+                </select>
+            </div>
+        </div>        
+
+        <hr >
+
+
+        <div class="row">
+            <div class="col-5">
+                <img id="ImagenPersonaje" class="tarjeta">
+            </div>
+            <div class="col-7 tarjetaInfo">
+                <h2 id="CharacterName">Nombre Personaje</h2>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+    <script>
+
+        
+
+        const fecthExecute=()=>{
+            fetch('https://rickandmortyapi.com/api/character/',{
+                method:"GET",
+                headers:{
+                    'Content-type':'application/json',                   
+                }
+            })
+            .then((respuesta)=>{
+                return respuesta.json();
+            })
+            .then((data)=>{               
+                
+                let arraPersonajes=data.results;
+                let arraSelect=arraPersonajes.map((ItemPersonaje)=>{
+                    return `<option value="${ItemPersonaje.id}">${ItemPersonaje.name}</option>`
+                })
+                document.getElementById("SelectPersonaje").innerHTML=`<option value="">Personaje</option>`+arraSelect.toString();
+
+
+            })
+            .catch()
+        }
+
+        fecthExecute();
+
+        //OBTENEMOS LA INFORMACION DEL PERSONAJE
+        const GetCharacter=(IdCharacter)=>{
+
+            if(IdCharacter!=""){              
+            
+            
+                fetch(`https://rickandmortyapi.com/api/character/${IdCharacter}`,{
+                    method:"GET",
+                    headers:{
+                        'Content-type':'application/json',                   
+                    }
+                })
+                .then((respuesta)=>{
+                    return respuesta.json();
+                })
+                .then((data)=>{                                   
+                    
+                    document.getElementById("ImagenPersonaje").setAttribute("src",data.image);
+                    document.getElementById("CharacterName").innerHTML=data.name;
+                })
+                .catch()
+            }
+        }
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
